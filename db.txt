@@ -1,0 +1,78 @@
+-- 🧑‍💼 1. Users Table
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(20),
+    role ENUM('admin', 'customer') DEFAULT 'customer',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 🏨 2. Rooms Table
+CREATE TABLE rooms (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    room_code VARCHAR(10) NOT NULL UNIQUE,
+    type ENUM('vip', 'standard') NOT NULL,
+    capacity INT NOT NULL,
+    hourly_rate DECIMAL(10,2) NOT NULL,
+    status ENUM('available', 'booked', 'in_use', 'maintenance') DEFAULT 'available',
+    image_url VARCHAR(500),
+    description TEXT
+);
+
+-- 📅 3. Bookings Table (chuẩn hóa với khóa ngoại)
+CREATE TABLE bookings (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    room_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending', 'paid', 'cancelled', 'checked_out') DEFAULT 'pending',
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+
+-- 💳 4. Payments Table
+CREATE TABLE payments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    method ENUM('card', 'wallet', 'cash', 'bank_transfer', 'vietcombank', 'techcombank', 'bidv') NOT NULL,
+    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id)
+);
+
+-- 📊 5. Reports Table (bảng phụ trợ để lưu thống kê xuất báo cáo nếu cần)
+CREATE TABLE reports (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    report_type ENUM('occupancy', 'revenue', 'customer') NOT NULL,
+    generated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    generated_by INT,
+    file_path VARCHAR(255),
+    FOREIGN KEY (generated_by) REFERENCES users(id)
+);
+
+INSERT INTO users (full_name, email, password, phone_number, role) VALUES
+('Nguyen Huy Vu', 'admin1@gmail.com', '111111', '0900000001', 'admin'),
+('Nguyen Huy Vu', 'admin@gmail.com', '111111', '0900000001', 'customer');
+
+INSERT INTO rooms (room_code, type, capacity, hourly_rate, image_url, description) VALUES
+-- Phòng VIP 1-2 người
+('V101', 'vip', 2, 500.00, 'https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10032202-e04838f34f5a8e6c1640dc93e70a9406.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,h-360,pr-true,q-80,w-640', 'Luxurious VIP room with elegant design, featuring a king-size bed, marble bathroom with jacuzzi, panoramic city view, premium amenities including 50-inch smart TV, minibar, and 24/7 room service. Perfect for romantic getaways.'),
+('V102', 'vip', 2, 550.00, 'https://ik.imagekit.io/tvlk/apr-asset/Ixf4aptF5N2Qdfmh4fGGYhTN274kJXuNMkUAzpL5HuD9jzSxIGG5kZNhhHY-p7nw/hotel/asset/20050636-b02da2d82245b290beb4e8284828bee4.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,fo-auto,h-332,pr-true,q-80,w-480', 'Premium VIP suite with modern furnishings, spacious layout, marble floors, walk-in shower, complimentary spa amenities, high-speed WiFi, and dedicated concierge service. Ideal for business travelers and couples.'),
+-- Phòng VIP 2-3 người
+('V103', 'vip', 3, 600.00, 'https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/20061992-e509b6ffec9998e20cdfd54cb05180ae.jpeg?_src=imagekit&tr=dpr-2,fo-auto,h-280,q-40,w-280', 'Spacious VIP family room with two queen beds, separate living area, kitchenette, two bathrooms, entertainment center, and private balcony. Includes complimentary breakfast and kids amenities for family comfort.'),
+-- Phòng VIP 3-5 người
+('V104', 'vip', 4, 650.00, 'https://ik.imagekit.io/tvlk/apr-asset/Ixf4aptF5N2Qdfmh4fGGYhTN274kJXuNMkUAzpL5HuD9jzSxIGG5kZNhhHY-p7nw/hotel/asset/20074748-79a21380225e6964d3f52a2f71be3da4.jpeg?_src=imagekit&tr=dpr-2,fo-auto,h-280,q-40,w-280', 'Executive VIP suite with master bedroom, separate living room, dining area, full kitchen, two bathrooms, work desk, premium bedding, and panoramic windows. Perfect for extended stays and business meetings.'),
+('V105', 'vip', 5, 750.00, 'https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/20022515-59141743b285163824f010db79605b4e.jpeg?_src=imagekit&tr=dpr-2,fo-auto,h-280,q-40,w-280', 'Luxury penthouse VIP suite with two bedrooms, spacious living area, full kitchen, three bathrooms, private terrace, hot tub, and exclusive butler service. Ultimate luxury experience for large groups and special occasions.'),
+-- Phòng Standard 1-2 người
+('T101', 'standard', 1, 150.00, 'https://ik.imagekit.io/tvlk/apr-asset/Ixf4aptF5N2Qdfmh4fGGYhTN274kJXuNMkUAzpL5HuD9jzSxIGG5kZNhhHY-p7nw/hotel/asset/20071837-69299303cc77f946c0c9ce67b6c1f22c.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,h-360,pr-true,q-80,w-640', 'Cozy standard single room with comfortable twin bed, modern bathroom, air conditioning, flat-screen TV, free WiFi, work desk, and essential amenities. Perfect for solo travelers and budget-conscious guests.'),
+('T102', 'standard', 2, 200.00, 'https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/20055658-9d35937852f5e36a4fa8031953423b7e.jpeg?_src=imagekit&tr=dpr-2,fo-auto,h-280,q-40,w-280', 'Comfortable standard double room with queen bed, modern furnishings, private bathroom with shower, air conditioning, cable TV, free WiFi, and convenient location. Great value for couples and short stays.'),
+-- Phòng Standard 2-3 người
+('T103', 'standard', 3, 250.00, 'https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/20023314-5ed86dd02e4234d1bb6025804fef7200.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,fo-auto,h-332,pr-true,q-80,w-480', 'Standard triple room with one double bed and one single bed, spacious layout, private bathroom, air conditioning, flat-screen TV, free WiFi, and extra storage space. Ideal for small families or groups of friends.'),
+-- Phòng Standard 3-5 người
+('T104', 'standard', 4, 300.00, 'https://ik.imagekit.io/tvlk/apr-asset/Ixf4aptF5N2Qdfmh4fGGYhTN274kJXuNMkUAzpL5HuD9jzSxIGG5kZNhhHY-p7nw/hotel/asset/20011694-4c950f9b429acbf55d3751e720e401db.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,fo-auto,h-332,pr-true,q-80,w-480', 'Spacious standard family room with two double beds, separate seating area, large bathroom, air conditioning, entertainment system, free WiFi, and family-friendly amenities. Perfect for families with children.'),
+('T105', 'standard', 5, 350.00, 'https://ik.imagekit.io/tvlk/apr-asset/Ixf4aptF5N2Qdfmh4fGGYhTN274kJXuNMkUAzpL5HuD9jzSxIGG5kZNhhHY-p7nw/hotel/asset/10026691-e65ceb5619deda0cc7ea660522b3ea6a.jpeg?_src=imagekit&tr=dpr-2,c-at_max,f-jpg,h-360,pr-true,q-80,w-640', 'Large standard group room with multiple beds, generous living space, two bathrooms, air conditioning, entertainment center, free WiFi, and group accommodation features. Excellent choice for large families or group travelers.');
