@@ -20,7 +20,6 @@ Hotel_Room_Booking/
 │   ├── css/               # File CSS
 │   ├── js/                # File JavaScript
 │   ├── images/            # Hình ảnh
-│   └── fonts/             # Font chữ
 │
 ├── config/                # Cấu hình
 │   └── database.php       # Kết nối database
@@ -28,12 +27,6 @@ Hotel_Room_Booking/
 ├── includes/              # File include chung
 │   ├── header.php         # Header
 │   ├── footer.php         # Footer
-│   └── functions.php      # Các hàm tiện ích
-│
-├── classes/               # Các class PHP
-│   ├── User.php           # Class quản lý người dùng
-│   ├── Room.php           # Class quản lý phòng
-│   └── Booking.php        # Class quản lý đặt phòng
 │
 ├── pages/                 # Các trang
 │   ├── login.php          # Đăng nhập
@@ -44,11 +37,6 @@ Hotel_Room_Booking/
 ├── admin/                 # Trang quản trị
 │   └── (các file admin)
 │
-├── uploads/               # Thư mục upload
-│   └── rooms/             # Hình ảnh phòng
-│
-├── index.php              # Trang chủ
-├── hotel_booking.sql      # File database
 └── README.md              # File hướng dẫn
 ```
 
@@ -65,10 +53,8 @@ Hotel_Room_Booking/
    ```bash
    git clone [repository-url]
    ```
-
 2. **Tạo database**
    - Tạo database mới trong MySQL
-   - Import file `hotel_booking.sql` vào database
 
 3. **Cấu hình kết nối database**
    - Mở file `config/database.php`
@@ -77,29 +63,20 @@ Hotel_Room_Booking/
    define('DB_HOST', 'localhost');
    define('DB_USER', 'root');
    define('DB_PASS', '');
-   define('DB_NAME', 'hotel_booking');
+   define('DB_NAME', 'hotel');
    ```
 
 4. **Cấu hình web server**
    - Đặt project trong thư mục web root
    - Cấu hình virtual host (nếu cần)
 
-5. **Phân quyền thư mục**
-   - Cho phép ghi vào thư mục `uploads/`
-   ```bash
-   chmod 755 uploads/
-   chmod 755 uploads/rooms/
-   ```
-
 ## Sử dụng
 
-### Tài khoản mặc định
-- **Admin**: admin@hotel.com / password: password
 
 ### Chức năng người dùng
 - Đăng ký tài khoản mới
 - Đăng nhập/Đăng xuất
-- Tìm kiếm phòng theo ngày và số khách
+- Tìm kiếm phòng theo ngày
 - Xem chi tiết phòng
 - Đặt phòng
 - Quản lý đặt phòng của mình
@@ -116,29 +93,8 @@ Hotel_Room_Booking/
 - **Database**: MySQL
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Framework CSS**: Bootstrap 5
-- **Icons**: Font Awesome
-- **Architecture**: MVC pattern
 
-## Tính năng bảo mật
 
-- Mã hóa mật khẩu bằng bcrypt
-- Validation dữ liệu đầu vào
-- Prepared statements chống SQL injection
-- CSRF protection
-- Session management
-
-## Responsive Design
-
-Website được thiết kế responsive, tương thích với:
-- Desktop
-- Tablet
-- Mobile
-
-## Liên hệ
-
-Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ:
-- Email: info@hotel.com
-- Phone: 0123456789
 
 ## License
 
